@@ -112,7 +112,7 @@
   <div class="wrap">
     <div class="eyebrow">NZIHL &amp; NZWIHL <span class="sep"></span> <span id="today" style="color:var(--muted);letter-spacing:.08em;font-weight:700"></span></div>
     <h1>Game-Day Rosters</h1>
-    <div class="tag">Find your game below and hit the gold button — that's the roster PDF for the show. Games marked <b>coming soon</b> aren't published yet; check back closer to game day.</div>
+    <div class="tag">Find your game below and hit the gold button — that's the roster PDF for the show. Games marked <b>coming soon</b> will include stats through each team's most recent game, and post by 7am on game day.</div>
     <a class="crew" href="https://matchavez.com/hockey/">On the crew? Full asset portal →</a>
   </div>
 </header>
@@ -178,7 +178,7 @@ function card(g){
     ? `<a class="dl" href="${esc(g.pdf)}">
          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
          Download roster PDF</a>`
-    : `<div class="soonbar"><span class="b">Coming soon</span><span class="s">Roster not published yet — check back closer to game day</span></div>`;
+    : `<div class="soonbar"><span class="b">Coming soon</span><span class="s">Includes stats through the last game — posts by 7am on game day</span></div>`;
   return `<div class="card ${ready?'ready':'soon'}">
     <div class="when"><span class="day">${esc(dayName(g.date))}</span><span class="date">${esc(niceDate(g.date))}</span><span class="chip ${g.league}">${g.league}</span></div>
     ${meta ? `<div class="meta">${esc(meta)}</div>` : ''}
