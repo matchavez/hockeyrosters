@@ -95,6 +95,11 @@
   .empty{ border:1.5px dashed var(--line); border-radius:16px; padding:44px 20px;
     text-align:center; color:var(--muted); font-size:15px; }
 
+  .nogames{ border-style:dashed; background:transparent; align-items:center;
+    justify-content:center; text-align:center; gap:8px; min-height:170px; }
+  .nogames .t{ font-size:15px; font-weight:700; color:var(--muted); }
+  .nogames .s{ font-size:12.5px; color:var(--muted); opacity:.75; }
+
   footer{ border-top:1px solid var(--line); margin-top:34px; padding:20px 0 40px;
     font-size:12.5px; color:var(--muted); }
   footer a{ color:var(--accent); }
@@ -241,17 +246,19 @@ async function loadLeague(lg, todayISO){
   const games = results.flat().filter(Boolean);
   games.sort((a,b) => String(a.sort).localeCompare(String(b.sort)) || a.league.localeCompare(b.league));
 
-  if(!games.length){
-    status.innerHTML = '';
-    grid.hidden = false;
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">No games this weekend.<br>
-      <span style="font-size:13px">Upcoming games appear here a few days out, once the pipeline spots them.</span></div>`;
-    return;
-  }
+  // Leagues that loaded fine but have nothing scheduled still get a card,
+  // so neither league ever looks like it's missing from the page.
+  const quiet = LEAGUES
+    .filter((lg,i) => results[i] !== null && !games.some(g => g.league === lg.code))
+    .map(lg => `<div class="card nogames">
+      <span class="chip ${lg.code}" style="margin-left:0">${lg.code}</span>
+      <span class="t">No ${lg.code} games this week</span>
+      <span class="s">Upcoming fixtures appear here a few days out</span>
+    </div>`).join('');
 
   status.remove();
   grid.hidden = false;
-  grid.innerHTML = games.map(card).join('');
+  grid.innerHTML = games.map(card).join('') + quiet;
 })();
 </script>
 </body>
