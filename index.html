@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game-Day Rosters — NZ Hockey</title>
+<meta name="description" content="Download the roster PDF for this weekend's NZIHL & NZWIHL broadcasts.">
+<link rel="icon" href="data:,">
+<style>
+  @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
+    src:url('https://matchavez.com/hockey/assets/fonts/InterVariable.woff2') format('woff2');}
+  :root{
+    --bg:#0a0b0d; --panel:#141619; --panel2:#1b1e22; --line:#2a2e34;
+    --txt:#f3f4f6; --muted:#9aa3ad; --gold:#f7be11; --accent:#3aa0ff; --live:#2ecc71;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{ margin:0; background:var(--bg); color:var(--txt);
+    font-family:Inter,-apple-system,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    font-feature-settings:"ss01" 1,"ss02" 1; line-height:1.5; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:860px; margin:0 auto; padding:0 16px; }
+
+  header.hero{ padding:38px 0 26px; border-bottom:1px solid var(--line);
+    position:relative; overflow:hidden; }
+  header.hero::before{ content:""; position:absolute; inset:-60% -20%; pointer-events:none;
+    background:
+      radial-gradient(640px 300px at 22% 35%, rgba(58,160,255,.11), transparent 62%),
+      radial-gradient(720px 330px at 78% 22%, rgba(247,190,17,.14), transparent 62%);
+    animation:drift 16s ease-in-out infinite alternate; }
+  @keyframes drift{ from{ transform:translate3d(-2.5%,0,0) scale(1); }
+    to{ transform:translate3d(2.5%,4%,0) scale(1.06); } }
+  .hero .wrap{ position:relative; }
+  .eyebrow{ display:flex; align-items:center; gap:10px; font-size:11px; font-weight:800;
+    letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin:0 0 6px; }
+  .eyebrow .sep{ width:26px; height:2px; border-radius:2px;
+    background:linear-gradient(90deg,var(--gold),transparent); }
+  .hero h1{ font-size:clamp(26px,4.6vw,40px); font-weight:800; margin:0; letter-spacing:.005em;
+    background:linear-gradient(92deg,#fff 55%, rgba(247,190,17,.92));
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero .tag{ color:var(--muted); margin-top:8px; font-size:15px; max-width:560px; }
+  .hero .crew{ display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+    font-size:12.5px; font-weight:600; color:var(--muted); padding:5px 12px;
+    border-radius:999px; border:1px solid var(--line); transition:.15s; }
+  .hero .crew:hover{ color:var(--txt); border-color:#3a3f47; background:var(--panel); }
+
+  main{ padding:26px 0 20px; }
+  #status{ color:var(--muted); font-size:14px; padding:26px 4px; }
+  #status a{ color:var(--accent); }
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:720px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:20px 20px 18px; display:flex; flex-direction:column; gap:14px;
+    position:relative; overflow:hidden; }
+  .card.ready{ border-color:#3a3f47;
+    box-shadow:0 0 0 1px rgba(247,190,17,.12), 0 8px 28px rgba(0,0,0,.35); }
+  .card.ready::before{ content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--gold),rgba(247,190,17,0)); }
+  .card.soon{ opacity:.92; }
+  .card.soon .match{ opacity:.45; filter:saturate(.4); }
+
+  .when{ display:flex; align-items:baseline; gap:10px; }
+  .when .day{ font-size:24px; font-weight:800; letter-spacing:.02em; text-transform:uppercase; }
+  .when .date{ font-size:15px; font-weight:600; color:var(--muted); }
+  .chip{ margin-left:auto; align-self:center; font-size:10.5px; font-weight:800;
+    letter-spacing:.14em; padding:3px 10px; border-radius:999px; border:1px solid var(--line);
+    color:var(--muted); white-space:nowrap; }
+  .chip.NZIHL{ color:var(--gold); border-color:rgba(247,190,17,.4); }
+  .chip.NZWIHL{ color:var(--accent); border-color:rgba(58,160,255,.4); }
+  .meta{ font-size:13.5px; color:var(--muted); margin-top:-10px; }
+
+  .match{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:4px 0 2px; }
+  .side{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0; }
+  .side img{ width:92px; height:92px; object-fit:contain;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.45)); }
+  .side .nm{ font-size:13.5px; font-weight:700; text-align:center; line-height:1.25; }
+  .at{ font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); padding:0 2px; }
+
+  .dl{ display:flex; align-items:center; justify-content:center; gap:9px;
+    background:linear-gradient(180deg,#ffd75e,var(--gold)); color:#151002;
+    font-weight:800; font-size:15.5px; padding:14px 16px; border-radius:12px;
+    transition:transform .12s, box-shadow .2s; box-shadow:0 4px 16px rgba(247,190,17,.22); }
+  .dl:hover{ transform:translateY(-1px); box-shadow:0 6px 22px rgba(247,190,17,.34); }
+  .dl:active{ transform:translateY(0); }
+  .dl svg{ flex:none; }
+
+  .soonbar{ display:flex; flex-direction:column; align-items:center; gap:3px;
+    border:1.5px dashed var(--line); border-radius:12px; padding:11px 16px; text-align:center; }
+  .soonbar .b{ font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted); }
+  .soonbar .s{ font-size:12px; color:var(--muted); opacity:.8; }
+
+  .empty{ border:1.5px dashed var(--line); border-radius:16px; padding:44px 20px;
+    text-align:center; color:var(--muted); font-size:15px; }
+
+  footer{ border-top:1px solid var(--line); margin-top:34px; padding:20px 0 40px;
+    font-size:12.5px; color:var(--muted); }
+  footer a{ color:var(--accent); }
+  footer .row{ display:flex; flex-wrap:wrap; gap:6px 14px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">NZIHL &amp; NZWIHL <span class="sep"></span> <span id="today" style="color:var(--muted);letter-spacing:.08em;font-weight:700"></span></div>
+    <h1>Game-Day Rosters</h1>
+    <div class="tag">Find your game below and hit the gold button — that's the roster PDF for the show. Games marked <b>coming soon</b> aren't published yet; check back closer to game day.</div>
+    <a class="crew" href="https://matchavez.com/hockey/">On the crew? Full asset portal →</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div id="status">Loading this week's games…</div>
+    <div class="grid" id="games" hidden></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <span>Updates automatically from the roster pipeline (daily, 7am NZT).</span>
+    <a target="_blank" rel="noopener" href="https://github.com/matchavez/nzihl-broadcast-rosters/releases">All NZIHL rosters</a>
+    <a target="_blank" rel="noopener" href="https://github.com/matchavez/nzwihl-broadcast-rosters/releases">All NZWIHL rosters</a>
+  </div>
+</footer>
+
+<script>
+const LOGOS = "https://matchavez.com/nzihl-broadcast-assets/assets/logos/";
+const TEAMS = {
+  // NZIHL
+  CRD:{nm:"Canterbury Red Devils", logo:"Red Devils 2000x2000r.png"},
+  BSW:{nm:"Botany Swarm",          logo:"Botany Swarm 2000x2000.png"},
+  WAA:{nm:"Pure NZ Admirals",      logo:"Pure-NZ-Admirals-2000x2000.png"},
+  DUN:{nm:"Dunedin Thunder",       logo:"Dunedin_Thunder.png"},
+  SCS:{nm:"SkyCity Stampede",      logo:"Skycity Stampede 2000x2000.png"},
+  MAK:{nm:"Auckland Mako",         logo:"Auckland Mako 2000x2000.png"},
+  // NZWIHL
+  AST:{nm:"Auckland Steel",         logo:"Auckland-Steel-White.png"},
+  CIN:{nm:"Canterbury Inferno",     logo:"Inferno-White.png"},
+  DTW:{nm:"Dunedin Thunder Women",  logo:"thunder-women-white.png"},
+  WLD:{nm:"Wakatipu Wild",          logo:"Wakatipu-wild-white.png"},
+};
+const LEAGUES = [
+  {code:"NZIHL",  repo:"nzihl-broadcast-rosters"},
+  {code:"NZWIHL", repo:"nzwihl-broadcast-rosters"},
+];
+
+// Games/rosters more than this many days past their date are hidden
+// (same rule as the /hockey portal).
+const STALE_CUTOFF_DAYS = 3;
+const nzTodayISO = () => new Date().toLocaleDateString('en-CA', {timeZone:'Pacific/Auckland'});
+const daysPast = (isoDate, todayISO) =>
+  Math.round((new Date(todayISO+'T00:00:00Z') - new Date((isoDate||'').slice(0,10)+'T00:00:00Z')) / 86400000);
+
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dayName  = iso => new Date(iso+'T00:00:00Z').toLocaleDateString('en-NZ', {weekday:'long',  timeZone:'UTC'});
+const niceDate = iso => new Date(iso+'T00:00:00Z').toLocaleDateString('en-NZ', {day:'numeric', month:'long', timeZone:'UTC'});
+const teamOf = code => TEAMS[(code||'').toUpperCase()] || {nm:(code||'?').toUpperCase(), logo:null};
+
+function side(code){
+  const t = teamOf(code);
+  const img = t.logo ? `<img loading="lazy" src="${LOGOS}${encodeURIComponent(t.logo)}" alt="">` : '';
+  return `<div class="side">${img}<span class="nm">${esc(t.nm)}</span></div>`;
+}
+
+function card(g){
+  const ready = !!g.pdf;
+  const meta = [g.time, g.venue].filter(Boolean).join(' · ');
+  const action = ready
+    ? `<a class="dl" href="${esc(g.pdf)}">
+         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+         Download roster PDF</a>`
+    : `<div class="soonbar"><span class="b">Coming soon</span><span class="s">Roster not published yet — check back closer to game day</span></div>`;
+  return `<div class="card ${ready?'ready':'soon'}">
+    <div class="when"><span class="day">${esc(dayName(g.date))}</span><span class="date">${esc(niceDate(g.date))}</span><span class="chip ${g.league}">${g.league}</span></div>
+    ${meta ? `<div class="meta">${esc(meta)}</div>` : ''}
+    <div class="match">${side(g.away_code)}<span class="at">at</span>${side(g.home_code)}</div>
+    ${action}
+  </div>`;
+}
+
+async function loadLeague(lg, todayISO){
+  const out = [];
+  let manifest = null, release = null;
+  try{
+    const r = await fetch(`https://raw.githubusercontent.com/matchavez/${lg.repo}/main/boxscores.json`, {cache:"no-store"});
+    if(r.ok) manifest = await r.json();
+  }catch(e){}
+  try{
+    const r = await fetch(`https://api.github.com/repos/matchavez/${lg.repo}/releases/latest`);
+    if(r.ok) release = await r.json();
+  }catch(e){}
+  if(manifest === null && release === null) return null;   // league fully unreachable
+
+  // PDF assets from the latest release, keyed by lowercased filename.
+  const pdfs = new Map();
+  (release?.assets||[]).forEach(a => {
+    if(a.name.toLowerCase().endsWith('.pdf')) pdfs.set(a.name.toLowerCase(), a.browser_download_url);
+  });
+
+  // Manifest games: PDF ready if `<date>_<AWAY>_at_<HOME>.pdf` exists.
+  (manifest?.games||[]).forEach(g => {
+    if(!g.date || daysPast(g.date, todayISO) > STALE_CUTOFF_DAYS) return;
+    const key = `${g.date}_${g.away_code}_at_${g.home_code}.pdf`.toLowerCase();
+    const pdf = pdfs.get(key) || null;
+    if(pdf) pdfs.delete(key);
+    out.push({league:lg.code, date:g.date, time:g.time, venue:g.venue,
+              away_code:g.away_code, home_code:g.home_code, sort:g.datetime||g.date, pdf});
+  });
+
+  // Any leftover fresh PDFs the manifest doesn't mention still get a card.
+  pdfs.forEach((url, name) => {
+    const m = name.match(/^(\d{4}-\d{2}-\d{2})_([a-z0-9]+)_at_([a-z0-9]+)\.pdf$/);
+    if(!m || daysPast(m[1], todayISO) > STALE_CUTOFF_DAYS) return;
+    out.push({league:lg.code, date:m[1], time:"", venue:"",
+              away_code:m[2], home_code:m[3], sort:m[1], pdf:url});
+  });
+  return out;
+}
+
+(async function(){
+  const todayISO = nzTodayISO();
+  document.getElementById('today').textContent =
+    new Date(todayISO+'T00:00:00Z').toLocaleDateString('en-NZ',
+      {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'});
+
+  const status = document.getElementById('status');
+  const grid = document.getElementById('games');
+  const results = await Promise.all(LEAGUES.map(lg => loadLeague(lg, todayISO)));
+
+  if(results.every(r => r === null)){
+    status.innerHTML = `Couldn’t load the live game list. Open the rosters directly:
+      <a target="_blank" rel="noopener" href="https://github.com/matchavez/nzihl-broadcast-rosters/releases/latest">NZIHL latest →</a> ·
+      <a target="_blank" rel="noopener" href="https://github.com/matchavez/nzwihl-broadcast-rosters/releases/latest">NZWIHL latest →</a>`;
+    return;
+  }
+
+  const games = results.flat().filter(Boolean);
+  games.sort((a,b) => String(a.sort).localeCompare(String(b.sort)) || a.league.localeCompare(b.league));
+
+  if(!games.length){
+    status.innerHTML = '';
+    grid.hidden = false;
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">No games this weekend.<br>
+      <span style="font-size:13px">Upcoming games appear here a few days out, once the pipeline spots them.</span></div>`;
+    return;
+  }
+
+  status.remove();
+  grid.hidden = false;
+  grid.innerHTML = games.map(card).join('');
+})();
+</script>
+</body>
+</html>
