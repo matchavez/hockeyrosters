@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Game-Day Rosters — NZ Hockey</title>
-<meta name="description" content="Download the roster PDF for this weekend's NZIHL & NZWIHL broadcasts.">
+<meta name="description" content="Download the roster PDF for upcoming NZIHL & NZWIHL broadcasts.">
 <link rel="icon" href="data:,">
 <style>
   @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;
@@ -119,7 +119,7 @@
 
 <main>
   <div class="wrap">
-    <div id="status">Loading this week's games…</div>
+    <div id="status">Loading upcoming games…</div>
     <div class="grid" id="games" hidden></div>
   </div>
 </main>
@@ -252,8 +252,8 @@ async function loadLeague(lg, todayISO){
     .filter((lg,i) => results[i] !== null && !games.some(g => g.league === lg.code))
     .map(lg => `<div class="card nogames">
       <span class="chip ${lg.code}" style="margin-left:0">${lg.code}</span>
-      <span class="t">No ${lg.code} games this week</span>
-      <span class="s">Upcoming fixtures appear here a few days out</span>
+      <span class="t">No ${lg.code} games in the next 11 days</span>
+      <span class="s">Upcoming fixtures appear here as soon as they're scheduled</span>
     </div>`).join('');
 
   status.remove();
