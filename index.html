@@ -212,6 +212,10 @@ async function loadLeague(lg, todayISO){
     const key = `${g.date}_${g.away_code}_at_${g.home_code}.pdf`.toLowerCase();
     const pdf = pdfs.get(key) || null;
     if(pdf) pdfs.delete(key);
+    // A past game with no PDF in the LATEST release has nothing to offer and
+    // "coming soon" would be nonsense — drop the card (its PDF lives in an older
+    // release once a newer one publishes; caught 2026-07-08).
+    if(!pdf && daysPast(g.date, todayISO) > 0) return;
     out.push({league:lg.code, date:g.date, time:g.time, venue:g.venue,
               away_code:g.away_code, home_code:g.home_code, sort:g.datetime||g.date, pdf});
   });
