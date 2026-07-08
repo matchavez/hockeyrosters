@@ -100,6 +100,18 @@
   .nogames .t{ font-size:15px; font-weight:700; color:var(--muted); }
   .nogames .s{ font-size:12.5px; color:var(--muted); opacity:.75; }
 
+  .card.series{ grid-column:1/-1; }
+  .seriesTags{ display:flex; align-items:center; gap:8px; }
+  .legs{ display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--line); padding-top:14px; }
+  .leg{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .leg .legday{ font-size:16px; font-weight:800; text-transform:uppercase; letter-spacing:.02em; }
+  .leg .legmeta{ font-size:12.5px; color:var(--muted); font-weight:600; }
+  .leg .legvenue{ font-size:11px; color:#6b7280; margin-top:1px; }
+  .leg .dl{ width:50%; box-sizing:border-box; padding:12px 14px; font-size:14px; gap:7px; }
+  .leg .soonchip{ width:50%; box-sizing:border-box; display:flex; align-items:center; justify-content:center;
+    text-align:center; border:1.5px dashed var(--line); border-radius:12px; padding:11px 14px; font-size:11.5px;
+    font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+
   footer{ border-top:1px solid var(--line); margin-top:34px; padding:20px 0 40px;
     font-size:12.5px; color:var(--muted); }
   footer a{ color:var(--accent); }
@@ -159,6 +171,8 @@ const STALE_CUTOFF_DAYS = 3;
 const nzTodayISO = () => new Date().toLocaleDateString('en-CA', {timeZone:'Pacific/Auckland'});
 const daysPast = (isoDate, todayISO) =>
   Math.round((new Date(todayISO+'T00:00:00Z') - new Date((isoDate||'').slice(0,10)+'T00:00:00Z')) / 86400000);
+const dateDiffDays = (a,b) =>
+  Math.round((new Date(b+'T00:00:00Z') - new Date(a+'T00:00:00Z')) / 86400000);
 
 const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dayName  = iso => new Date(iso+'T00:00:00Z').toLocaleDateString('en-NZ', {weekday:'long',  timeZone:'UTC'});
@@ -184,6 +198,59 @@ function card(g){
     ${meta ? `<div class="meta">${esc(meta)}</div>` : ''}
     <div class="match">${side(g.away_code)}<span class="at">at</span>${side(g.home_code)}</div>
     ${action}
+  </div>`;
+}
+
+// Weekend series: same two teams (same home/away), games <=3 days apart get
+// merged into one card with the matchup shown once and a compact row per leg
+// (mirrors the roster pipeline's own group_into_series 3-day rule).
+function groupIntoSeries(games){
+  const buckets = new Map();
+  games.forEach(g => {
+    const key = `${g.league}|${g.away_code}|${g.home_code}`;
+    if(!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(g);
+  });
+  const groups = [];
+  buckets.forEach(list => {
+    list.sort((a,b) => String(a.sort).localeCompare(String(b.sort)));
+    let run = [list[0]];
+    for(let i=1;i<list.length;i++){
+      if(dateDiffDays(list[i-1].date, list[i].date) <= 3){
+        run.push(list[i]);
+      } else {
+        groups.push(run);
+        run = [list[i]];
+      }
+    }
+    groups.push(run);
+  });
+  return groups;
+}
+
+function seriesCard(group){
+  const first = group[0];
+  const ready = group.some(g => g.pdf);
+  const legs = group.map(g => {
+    const metaBits = [niceDate(g.date), g.time].filter(Boolean).join(' · ');
+    const action = g.pdf
+      ? `<a class="dl" href="${esc(g.pdf)}">
+           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+           Download PDF</a>`
+      : `<span class="soonchip">Coming soon</span>`;
+    return `<div class="leg">
+      <div>
+        <div class="legday">${esc(dayName(g.date))}</div>
+        <div class="legmeta">${esc(metaBits)}</div>
+        ${g.venue ? `<div class="legvenue">${esc(g.venue)}</div>` : ''}
+      </div>
+      ${action}
+    </div>`;
+  }).join('');
+  return `<div class="card series ${ready?'ready':'soon'}">
+    <div class="seriesTags"><span class="chip ${first.league}" style="margin-left:0">${first.league}</span><span class="chip" style="margin-left:0">${group.length}-GAME SET</span></div>
+    <div class="match">${side(first.away_code)}<span class="at">at</span>${side(first.home_code)}</div>
+    <div class="legs">${legs}</div>
   </div>`;
 }
 
@@ -260,9 +327,12 @@ async function loadLeague(lg, todayISO){
       <span class="s">Upcoming fixtures appear here as soon as they're scheduled</span>
     </div>`).join('');
 
+  const groups = groupIntoSeries(games)
+    .sort((a,b) => String(a[0].sort).localeCompare(String(b[0].sort)) || a[0].league.localeCompare(b[0].league));
+
   status.remove();
   grid.hidden = false;
-  grid.innerHTML = games.map(card).join('') + quiet;
+  grid.innerHTML = groups.map(g => g.length > 1 ? seriesCard(g) : card(g[0])).join('') + quiet;
 })();
 </script>
 </body>
