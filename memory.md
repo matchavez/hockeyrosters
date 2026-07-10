@@ -1,6 +1,6 @@
 # memory.md — matchavez/hockeyrosters
 
-Self-context for Claude. No README.md currently exists in this repo (single `index.html` file) — note this rather than assume; if a human-readable README gets added later, keep it and this file in sync per the standing instruction. Last refreshed: 2026-07-11.
+Self-context for Claude. README.md now exists (added 2026-07-11) with user-facing install/usage details. Last refreshed: 2026-07-11.
 
 ## What this repo is
 Single-page site at `https://matchavez.com/hockeyrosters` — talent-facing roster-PDF downloads for NZIHL/NZWIHL broadcast booth. GitHub Pages, one `index.html`, no build step.
