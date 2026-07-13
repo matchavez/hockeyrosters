@@ -23,5 +23,11 @@ Single-page site at `https://matchavez.com/hockeyrosters` — talent-facing rost
 - **matchavez/nzihl-broadcast-rosters**, **matchavez/nzwihl-broadcast-rosters** — actually generate the roster PDFs (daily cron 17:30 UTC) and the `boxscores.json` gameid manifest this page reads to know what's playable/postable.
 - **matchavez/hockey** — the broader portal; links to this page.
 
+## Playoff-readiness audit (2026-07-13)
+See matchavez/hockey's playoff-readiness.md for the full cross-repo audit. Change made here:
+**.github/workflows/force-pages-build.yml** (new) -- POSTs /pages/builds on every push to main so
+this repo's GitHub Pages (legacy builder) never depends on someone remembering the manual
+force-build trick. Verified green via the Actions API.
+
 ## Sync note
 Keep this file (and README.md, if one gets added) in sync with every meaningful change. If they drift, flag it to Mat and get approval before publishing the sync rather than doing it silently.
